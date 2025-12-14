@@ -645,6 +645,58 @@ body {
     width: 90vw;
 }
 
+/* 카드 상세 내용 컨테이너 */
+.card-detail-card-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.card-detail-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    width: 600px;
+    height: 400px;
+}
+
+/* Mobile card detail modal */
+@media (max-width: 768px) {
+    #card-detail-modal .modal-content {
+        width: 95vw;
+        max-height: 85vh;
+        padding: 1rem;
+        margin: 0.5rem;
+    }
+
+    #card-detail-modal .modal-content h3 {
+        font-size: 1.2rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    .card-detail-card {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 3 / 2;
+        max-height: 50vh;
+    }
+
+    /* Scale card contents for mobile */
+    .card-detail-card .card-content-scaled {
+        transform-origin: top left;
+    }
+
+    #card-detail-modal .modal-buttons {
+        margin-top: 1rem;
+        gap: 0.5rem;
+    }
+
+    #card-detail-modal .modal-buttons .btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+    }
+}
+
 .modal-close {
     position: absolute;
     top: var(--spacing-sm);

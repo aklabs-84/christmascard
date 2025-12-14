@@ -991,29 +991,54 @@ const app = {
                 `;
             });
 
+            // Calculate scale for mobile
+            const isMobile = window.innerWidth <= 768;
+            const cardWidth = 600;
+            const cardHeight = 400;
+
             content.innerHTML = `
                 <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--christmas-red);">
                     ${card.authorName}님의 카드
                 </h3>
-                <div style="display: flex; justify-content: center;">
-                    <div class="${background.animation !== 'none' ? background.animation : ''}"
-                        style="
-                            background: ${background.color};
-                            width: 600px;
-                            height: 400px;
-                            max-width: 90vw;
-                            max-height: 70vh;
-                            position: relative;
-                            overflow: hidden;
-                            border-radius: 8px;
-                        ">
-                        ${cardContent || '<p style="color: #666; text-align: center; padding-top: 160px;">빈 카드입니다</p>'}
+                <div class="card-detail-card-container">
+                    <div class="card-detail-card ${background.animation !== 'none' ? background.animation : ''}"
+                        style="background: ${background.color};"
+                        data-original-width="${cardWidth}"
+                        data-original-height="${cardHeight}">
+                        <div class="card-content-scaled" style="width: ${cardWidth}px; height: ${cardHeight}px; position: relative;">
+                            ${cardContent || '<p style="color: #666; text-align: center; padding-top: 160px;">빈 카드입니다</p>'}
+                        </div>
                     </div>
                 </div>
             `;
+
+            // Apply scale for mobile after rendering
+            if (isMobile) {
+                requestAnimationFrame(() => {
+                    this.scaleCardForMobile();
+                });
+            }
         }
 
         modal.classList.add('active');
+    },
+
+    scaleCardForMobile() {
+        const cardContainer = document.querySelector('.card-detail-card');
+        const cardContent = document.querySelector('.card-content-scaled');
+
+        if (!cardContainer || !cardContent) return;
+
+        const originalWidth = 600;
+        const containerWidth = cardContainer.offsetWidth;
+
+        if (containerWidth < originalWidth) {
+            const scale = containerWidth / originalWidth;
+            cardContent.style.transform = `scale(${scale})`;
+            cardContent.style.transformOrigin = 'top left';
+            // Adjust container height based on scale
+            cardContainer.style.height = `${400 * scale}px`;
+        }
     },
 
     setupBackgroundAnimations() {
@@ -1327,6 +1352,13 @@ const app = {
     openCardFromList(cardId) {
         const card = this.cards.find(c => c.id === cardId);
         if (!card) return;
+
+        // Close mobile card list overlay if open
+        const mobileOverlay = document.getElementById('mobile-card-overlay');
+        if (mobileOverlay && mobileOverlay.classList.contains('active')) {
+            mobileOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
 
         if (card.cardType === 'url' && card.url) {
             const confirmOpen = window.confirm('링크로 이동하시겠습니까?\n' + card.url);
