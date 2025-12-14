@@ -113,7 +113,6 @@ class GoogleSheetsHandler {
         if (!this.scriptUrl || this.scriptUrl === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
             throw new Error('Google Apps Script URL이 설정되지 않았습니다. config.js 파일을 확인해주세요.');
         }
-        console.log('Google Apps Script handler initialized');
     }
 
     async loadCards() {
@@ -176,12 +175,6 @@ class GoogleSheetsHandler {
 
     async updateCard(cardId, cardData) {
         try {
-            console.log('updateCard called with:', {
-                scriptUrl: this.scriptUrl,
-                cardId,
-                cardData
-            });
-
             const response = await fetch(this.scriptUrl, {
                 method: 'POST',
                 headers: {
@@ -194,9 +187,7 @@ class GoogleSheetsHandler {
                 })
             });
 
-            console.log('updateCard response status:', response.status);
             const result = await response.json();
-            console.log('updateCard result:', result);
 
             if (!result.success) {
                 throw new Error(result.error || 'Failed to update card');
@@ -684,7 +675,6 @@ const app = {
     },
 
     async init() {
-        console.log('Christmas Tree Card App Initializing...');
         const isEditorPage = document.body.dataset.initialView === 'editor';
 
         this.setupBackgroundAnimations();
@@ -753,7 +743,6 @@ const app = {
             // 카드 데이터가 갱신될 때마다 페이지를 처음으로 리셋
             this.currentTreePage = 1;
             this.currentListPage = 1;
-            console.log('Loaded cards:', this.cards);
             this.renderOrnaments();
             this.renderCardList();
         } catch (error) {
@@ -1128,13 +1117,7 @@ const app = {
 
             // canplay: 충분한 데이터가 로드되어 재생을 시작할 수 있을 때 (빠른 로딩)
             this.audio.addEventListener('canplay', () => {
-                console.log('BGM ready to play');
                 tryPlay();
-            }, { once: true });
-
-            // loadeddata: 현재 재생 위치의 데이터가 로드되었을 때 (fallback)
-            this.audio.addEventListener('loadeddata', () => {
-                console.log('BGM data loaded');
             }, { once: true });
 
             playBtn.addEventListener('click', () => {
