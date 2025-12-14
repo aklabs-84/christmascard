@@ -96,6 +96,34 @@
             </div>
             </div>
         </div>
+
+        <!-- Mobile Card List Toggle Button -->
+        <button class="mobile-card-toggle" id="mobile-card-toggle" onclick="app.toggleMobileCardList()">
+            <i class="fas fa-list"></i> 카드 목록
+            <span class="badge" id="mobile-card-count">0</span>
+        </button>
+
+        <!-- Mobile Card List Overlay -->
+        <div class="mobile-card-overlay" id="mobile-card-overlay">
+            <div class="mobile-card-header">
+                <h3>🎁 카드 목록</h3>
+                <button class="mobile-card-close" onclick="app.toggleMobileCardList()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="mobile-card-list" id="mobile-card-list">
+                <p class="empty-message">아직 작성된 카드가 없습니다</p>
+            </div>
+            <div class="mobile-card-pagination">
+                <button class="pagination-btn" onclick="app.changeListPage(-1)">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <span class="pagination-info" id="mobile-list-page-info">1 / 1</span>
+                <button class="pagination-btn" onclick="app.changeListPage(1)">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Card Editor View -->

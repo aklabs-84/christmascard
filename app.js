@@ -861,12 +861,13 @@ const app = {
     updateListPagination(totalPagesOverride) {
         const totalPages = Math.max(1, totalPagesOverride || Math.ceil((this.cards?.length || 0) / this.itemsPerPage));
         const pageInfo = document.getElementById('list-page-info');
+        const mobilePageInfo = document.getElementById('mobile-list-page-info');
         const prevBtn = document.getElementById('list-prev-btn');
         const nextBtn = document.getElementById('list-next-btn');
 
-        if (pageInfo) {
-            pageInfo.textContent = `${this.currentListPage} / ${totalPages}`;
-        }
+        const pageText = `${this.currentListPage} / ${totalPages}`;
+        if (pageInfo) pageInfo.textContent = pageText;
+        if (mobilePageInfo) mobilePageInfo.textContent = pageText;
 
         if (prevBtn) {
             prevBtn.disabled = this.currentListPage <= 1 || !this.cards || this.cards.length === 0;
@@ -1209,10 +1210,18 @@ const app = {
 
     renderCardList() {
         const cardListContent = document.getElementById('card-list-content');
-        if (!cardListContent) return;
+        const mobileCardList = document.getElementById('mobile-card-list');
+        const mobileCardCount = document.getElementById('mobile-card-count');
+
+        // Update mobile card count badge
+        if (mobileCardCount) {
+            mobileCardCount.textContent = this.cards ? this.cards.length : 0;
+        }
 
         if (!this.cards || this.cards.length === 0) {
-            cardListContent.innerHTML = '<p class="empty-message">아직 작성된 카드가 없습니다</p>';
+            const emptyMsg = '<p class="empty-message">아직 작성된 카드가 없습니다</p>';
+            if (cardListContent) cardListContent.innerHTML = emptyMsg;
+            if (mobileCardList) mobileCardList.innerHTML = emptyMsg;
             this.currentListPage = 1;
             this.updateListPagination(1);
             return;
@@ -1234,7 +1243,7 @@ const app = {
         const endIdx = startIdx + this.itemsPerPage;
         const pageCards = sortedCards.slice(startIdx, endIdx);
 
-        cardListContent.innerHTML = pageCards.map(card => {
+        const cardListHTML = pageCards.map(card => {
             const icon = CONFIG.ORNAMENT_TYPES[card.ornamentType] || '🎁';
             // 카드 제목: URL 카드면 URL, 일반 카드면 첫 텍스트 또는 작성자 이름
             let title = card.authorName + '님의 카드';
@@ -1267,7 +1276,20 @@ const app = {
             `;
         }).join('');
 
+        // Update both desktop and mobile card lists
+        if (cardListContent) cardListContent.innerHTML = cardListHTML;
+        if (mobileCardList) mobileCardList.innerHTML = cardListHTML;
+
         this.updateListPagination(totalPages);
+    },
+
+    toggleMobileCardList() {
+        const overlay = document.getElementById('mobile-card-overlay');
+        if (overlay) {
+            overlay.classList.toggle('active');
+            // Prevent body scroll when overlay is open
+            document.body.style.overflow = overlay.classList.contains('active') ? 'hidden' : '';
+        }
     },
 
     highlightOrnament(cardId) {
@@ -3032,6 +3054,13 @@ const app = {
 
         // Close the card detail modal if open
         this.closeCardDetail();
+
+        // Close mobile card list overlay if open
+        const mobileOverlay = document.getElementById('mobile-card-overlay');
+        if (mobileOverlay && mobileOverlay.classList.contains('active')) {
+            mobileOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
 
         // Scroll to the tree
         const treeContainer = document.getElementById('tree-container');
