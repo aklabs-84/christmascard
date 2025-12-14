@@ -1,5 +1,5 @@
 # API Keys and Sensitive Configuration
-config.js
+# config.js - Google Apps Script URL은 공개 API이므로 포함
 
 # OS Files
 .DS_Store
