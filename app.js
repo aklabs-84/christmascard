@@ -1270,11 +1270,9 @@ const app = {
 
         const cardListHTML = pageCards.map(card => {
             const icon = CONFIG.ORNAMENT_TYPES[card.ornamentType] || '🎁';
-            // 카드 제목: URL 카드면 URL, 일반 카드면 첫 텍스트 또는 작성자 이름
+            // 카드 제목: 작성자 이름을 기본으로 사용하고, 일반 카드면 첫 텍스트가 있으면 사용
             let title = card.authorName + '님의 카드';
-            if (card.cardType === 'url' && card.url) {
-                title = card.url.length > 30 ? card.url.substring(0, 30) + '...' : card.url;
-            } else if (card.cardData && card.cardData.texts && card.cardData.texts.length > 0) {
+            if (card.cardData && card.cardData.texts && card.cardData.texts.length > 0) {
                 const firstText = card.cardData.texts[0].content || '';
                 if (firstText.length > 20) {
                     title = firstText.substring(0, 20) + '...';
